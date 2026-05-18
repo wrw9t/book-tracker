@@ -18,6 +18,32 @@ def save_books(books):
     with open(FILENAME, "w", encoding="utf-8") as f:
         json.dump(books, f, ensure_ascii=False, indent=4)
 
+def delete_book():
+    """Удаление книги по её индексу (Пункт меню 5)"""
+    books = load_books()
+    if not books:
+        print("\nСписок книг пуст. Удалять нечего.")
+        return
+        
+    print("\n--- Доступные для удаления книги ---")
+    for idx, book in enumerate(books, 1):
+         print(f"{idx}. {book['author']} — «{book['title']}»")
+         
+    while True:
+        try:
+            choice = int(input("\nВведите номер книги для удаления (или 0 для отмены): "))
+            if choice == 0:
+                print("Удаление отменено.")
+                return
+            if 1 <= choice <= len(books):
+                removed = books.pop(choice - 1)
+                save_books(books)
+                print(f"\n[Успех] Книга '{removed['title']}' успешно удалена!")
+                break
+            print("Ошибка: Неверный номер. Выберите индекс из списка.")
+        except ValueError:
+            print("Ошибка: Пожалуйста, введите корректное число.")
+
 def main():
     while True:
         print("\n--- Меню Трекера Книг ---")
@@ -39,7 +65,7 @@ def main():
         elif choice == "4":
             print("[Заглушка] Тут будет статистика по авторам...")
         elif choice == "5":
-            print("[Заглушка] Тут будет удаление книги...")
+            delete_book()  # Вызов функции удаления
         elif choice == "6":
             print("Выход из программы. До свидания!")
             break
